@@ -1,0 +1,32 @@
+<annotation>
+	<filename>08001.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>chimney</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>76</xmin>
+			<ymin>295</ymin>
+			<xmax>350</xmax>
+			<ymax>551</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>chimney</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>474</xmin>
+			<ymin>276</ymin>
+			<xmax>734</xmax>
+			<ymax>534</ymax>
+		</bndbox>
+	</object>
+</annotation>

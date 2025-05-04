@@ -1,0 +1,32 @@
+<annotation>
+	<filename>09207.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>windmill</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>233</xmin>
+			<ymin>541</ymin>
+			<xmax>286</xmax>
+			<ymax>616</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>windmill</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>497</xmin>
+			<ymin>233</ymin>
+			<xmax>558</xmax>
+			<ymax>310</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>11576.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Expressway-toll-station</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>285</xmin>
+			<ymin>467</ymin>
+			<xmax>417</xmax>
+			<ymax>639</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>basketballcourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>288</xmin>
+			<ymin>346</ymin>
+			<xmax>399</xmax>
+			<ymax>445</ymax>
+		</bndbox>
+	</object>
+</annotation>

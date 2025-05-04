@@ -1,0 +1,32 @@
+<annotation>
+	<filename>17284.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>215</xmin>
+			<ymin>188</ymin>
+			<xmax>282</xmax>
+			<ymax>281</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>350</xmin>
+			<ymin>62</ymin>
+			<xmax>379</xmax>
+			<ymax>91</ymax>
+		</bndbox>
+	</object>
+</annotation>

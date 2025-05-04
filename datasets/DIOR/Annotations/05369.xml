@@ -1,0 +1,22 @@
+<annotation>
+	<filename>05369.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>basketballcourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>288</xmin>
+			<ymin>266</ymin>
+			<xmax>578</xmax>
+			<ymax>460</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>06678.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>134</xmin>
+			<ymin>226</ymin>
+			<xmax>595</xmax>
+			<ymax>467</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>679</xmin>
+			<ymin>524</ymin>
+			<xmax>698</xmax>
+			<ymax>533</ymax>
+		</bndbox>
+	</object>
+</annotation>

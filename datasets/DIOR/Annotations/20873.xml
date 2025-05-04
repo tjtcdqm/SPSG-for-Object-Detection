@@ -1,0 +1,32 @@
+<annotation>
+	<filename>20873.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>golffield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>29</xmin>
+			<ymin>196</ymin>
+			<xmax>674</xmax>
+			<ymax>681</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>82</xmin>
+			<ymin>87</ymin>
+			<xmax>113</xmax>
+			<ymax>105</ymax>
+		</bndbox>
+	</object>
+</annotation>

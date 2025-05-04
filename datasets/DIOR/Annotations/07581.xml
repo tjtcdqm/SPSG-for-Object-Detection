@@ -1,0 +1,32 @@
+<annotation>
+	<filename>07581.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>storagetank</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>429</xmin>
+			<ymin>401</ymin>
+			<xmax>655</xmax>
+			<ymax>626</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>storagetank</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>540</xmin>
+			<ymin>191</ymin>
+			<xmax>702</xmax>
+			<ymax>350</ymax>
+		</bndbox>
+	</object>
+</annotation>

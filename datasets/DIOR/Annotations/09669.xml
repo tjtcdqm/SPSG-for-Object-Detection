@@ -1,0 +1,32 @@
+<annotation>
+	<filename>09669.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>58</xmin>
+			<ymin>287</ymin>
+			<xmax>727</xmax>
+			<ymax>347</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>355</xmin>
+			<ymin>676</ymin>
+			<xmax>378</xmax>
+			<ymax>713</ymax>
+		</bndbox>
+	</object>
+</annotation>

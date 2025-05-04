@@ -1,0 +1,32 @@
+<annotation>
+	<filename>15319.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>599</xmin>
+			<ymin>537</ymin>
+			<xmax>689</xmax>
+			<ymax>710</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>485</xmin>
+			<ymin>497</ymin>
+			<xmax>565</xmax>
+			<ymax>638</ymax>
+		</bndbox>
+	</object>
+</annotation>

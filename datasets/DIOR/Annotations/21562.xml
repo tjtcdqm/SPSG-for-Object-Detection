@@ -1,0 +1,32 @@
+<annotation>
+	<filename>21562.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>413</xmin>
+			<ymin>514</ymin>
+			<xmax>689</xmax>
+			<ymax>650</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>546</xmin>
+			<ymin>96</ymin>
+			<xmax>604</xmax>
+			<ymax>213</ymax>
+		</bndbox>
+	</object>
+</annotation>

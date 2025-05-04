@@ -1,0 +1,32 @@
+<annotation>
+	<filename>04629.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>storagetank</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>243</xmin>
+			<ymin>341</ymin>
+			<xmax>448</xmax>
+			<ymax>532</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>537</xmin>
+			<ymin>454</ymin>
+			<xmax>561</xmax>
+			<ymax>499</ymax>
+		</bndbox>
+	</object>
+</annotation>

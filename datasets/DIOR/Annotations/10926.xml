@@ -1,0 +1,32 @@
+<annotation>
+	<filename>10926.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>169</xmin>
+			<ymin>32</ymin>
+			<xmax>468</xmax>
+			<ymax>685</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>650</xmin>
+			<ymin>451</ymin>
+			<xmax>689</xmax>
+			<ymax>463</ymax>
+		</bndbox>
+	</object>
+</annotation>

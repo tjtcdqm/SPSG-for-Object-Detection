@@ -1,0 +1,32 @@
+<annotation>
+	<filename>01965.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>golffield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>159</xmin>
+			<ymin>142</ymin>
+			<xmax>532</xmax>
+			<ymax>709</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>dam</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>70</xmin>
+			<ymin>397</ymin>
+			<xmax>121</xmax>
+			<ymax>420</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>01342.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>107</xmin>
+			<ymin>76</ymin>
+			<xmax>279</xmax>
+			<ymax>129</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Expressway-toll-station</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>636</xmin>
+			<ymin>559</ymin>
+			<xmax>652</xmax>
+			<ymax>570</ymax>
+		</bndbox>
+	</object>
+</annotation>

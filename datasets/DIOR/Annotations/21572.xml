@@ -1,0 +1,32 @@
+<annotation>
+	<filename>21572.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>basketballcourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>299</xmin>
+			<ymin>297</ymin>
+			<xmax>436</xmax>
+			<ymax>525</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>basketballcourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>472</xmin>
+			<ymin>294</ymin>
+			<xmax>609</xmax>
+			<ymax>522</ymax>
+		</bndbox>
+	</object>
+</annotation>

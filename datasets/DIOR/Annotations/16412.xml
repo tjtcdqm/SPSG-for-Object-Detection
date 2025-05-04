@@ -1,0 +1,32 @@
+<annotation>
+	<filename>16412.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>283</xmin>
+			<ymin>150</ymin>
+			<xmax>686</xmax>
+			<ymax>607</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>golffield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>235</xmin>
+			<ymin>617</ymin>
+			<xmax>370</xmax>
+			<ymax>789</ymax>
+		</bndbox>
+	</object>
+</annotation>

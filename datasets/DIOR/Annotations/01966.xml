@@ -1,0 +1,22 @@
+<annotation>
+	<filename>01966.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>dam</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>209</xmin>
+			<ymin>279</ymin>
+			<xmax>432</xmax>
+			<ymax>715</ymax>
+		</bndbox>
+	</object>
+</annotation>

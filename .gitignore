@@ -1,0 +1,9 @@
+*.jpg
+.vscode/
+./datasets/
+transferset/
+victim/
+wellTrain/
+**/__pycache__/
+**/.ipynb_checkpoints/
+

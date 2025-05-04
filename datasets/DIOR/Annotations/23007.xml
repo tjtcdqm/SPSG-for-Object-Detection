@@ -1,0 +1,32 @@
+<annotation>
+	<filename>23007.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>stadium</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>162</xmin>
+			<ymin>227</ymin>
+			<xmax>234</xmax>
+			<ymax>318</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>591</xmin>
+			<ymin>143</ymin>
+			<xmax>655</xmax>
+			<ymax>226</ymax>
+		</bndbox>
+	</object>
+</annotation>

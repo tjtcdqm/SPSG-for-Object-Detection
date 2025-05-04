@@ -1,0 +1,32 @@
+<annotation>
+	<filename>08423.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>280</xmin>
+			<ymin>312</ymin>
+			<xmax>306</xmax>
+			<ymax>357</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>433</xmin>
+			<ymin>114</ymin>
+			<xmax>619</xmax>
+			<ymax>184</ymax>
+		</bndbox>
+	</object>
+</annotation>

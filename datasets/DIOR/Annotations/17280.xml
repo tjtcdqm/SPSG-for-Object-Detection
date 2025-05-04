@@ -1,0 +1,32 @@
+<annotation>
+	<filename>17280.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>tenniscourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>439</xmin>
+			<ymin>76</ymin>
+			<xmax>532</xmax>
+			<ymax>267</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>tenniscourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>556</xmin>
+			<ymin>74</ymin>
+			<xmax>649</xmax>
+			<ymax>265</ymax>
+		</bndbox>
+	</object>
+</annotation>

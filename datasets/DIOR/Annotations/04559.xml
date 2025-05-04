@@ -1,0 +1,32 @@
+<annotation>
+	<filename>04559.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>baseballfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>258</xmin>
+			<ymin>56</ymin>
+			<xmax>441</xmax>
+			<ymax>248</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>baseballfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>308</xmin>
+			<ymin>519</ymin>
+			<xmax>492</xmax>
+			<ymax>726</ymax>
+		</bndbox>
+	</object>
+</annotation>

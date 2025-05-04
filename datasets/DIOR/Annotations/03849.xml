@@ -1,0 +1,32 @@
+<annotation>
+	<filename>03849.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>48</xmin>
+			<ymin>630</ymin>
+			<xmax>148</xmax>
+			<ymax>705</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>174</xmin>
+			<ymin>257</ymin>
+			<xmax>659</xmax>
+			<ymax>467</ymax>
+		</bndbox>
+	</object>
+</annotation>

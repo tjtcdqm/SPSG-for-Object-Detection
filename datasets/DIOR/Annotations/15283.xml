@@ -1,0 +1,32 @@
+<annotation>
+	<filename>15283.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>49</xmin>
+			<ymin>423</ymin>
+			<xmax>697</xmax>
+			<ymax>499</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>storagetank</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>91</xmin>
+			<ymin>201</ymin>
+			<xmax>111</xmax>
+			<ymax>222</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>12641.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>523</xmin>
+			<ymin>631</ymin>
+			<xmax>544</xmax>
+			<ymax>776</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Expressway-Service-area</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>47</xmin>
+			<ymin>169</ymin>
+			<xmax>676</xmax>
+			<ymax>689</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>02008.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>212</xmin>
+			<ymin>290</ymin>
+			<xmax>351</xmax>
+			<ymax>686</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>32</xmin>
+			<ymin>107</ymin>
+			<xmax>209</xmax>
+			<ymax>604</ymax>
+		</bndbox>
+	</object>
+</annotation>

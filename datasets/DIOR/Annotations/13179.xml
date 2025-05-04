@@ -1,0 +1,22 @@
+<annotation>
+	<filename>13179.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>tenniscourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>288</xmin>
+			<ymin>689</ymin>
+			<xmax>329</xmax>
+			<ymax>755</ymax>
+		</bndbox>
+	</object>
+</annotation>

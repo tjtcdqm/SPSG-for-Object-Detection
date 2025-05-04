@@ -1,0 +1,32 @@
+<annotation>
+	<filename>01697.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>41</xmin>
+			<ymin>400</ymin>
+			<xmax>789</xmax>
+			<ymax>426</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>569</xmin>
+			<ymin>597</ymin>
+			<xmax>613</xmax>
+			<ymax>679</ymax>
+		</bndbox>
+	</object>
+</annotation>

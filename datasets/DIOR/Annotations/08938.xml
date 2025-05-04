@@ -1,0 +1,32 @@
+<annotation>
+	<filename>08938.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>dam</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>222</xmin>
+			<ymin>438</ymin>
+			<xmax>520</xmax>
+			<ymax>709</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>dam</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>545</xmin>
+			<ymin>409</ymin>
+			<xmax>625</xmax>
+			<ymax>456</ymax>
+		</bndbox>
+	</object>
+</annotation>

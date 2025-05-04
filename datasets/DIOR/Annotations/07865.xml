@@ -1,0 +1,32 @@
+<annotation>
+	<filename>07865.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>203</xmin>
+			<ymin>300</ymin>
+			<xmax>498</xmax>
+			<ymax>533</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>162</xmin>
+			<ymin>181</ymin>
+			<xmax>175</xmax>
+			<ymax>200</ymax>
+		</bndbox>
+	</object>
+</annotation>

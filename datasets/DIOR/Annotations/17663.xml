@@ -1,0 +1,22 @@
+<annotation>
+	<filename>17663.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>golffield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>275</xmin>
+			<ymin>149</ymin>
+			<xmax>723</xmax>
+			<ymax>688</ymax>
+		</bndbox>
+	</object>
+</annotation>

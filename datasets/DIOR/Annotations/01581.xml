@@ -1,0 +1,32 @@
+<annotation>
+	<filename>01581.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>364</xmin>
+			<ymin>223</ymin>
+			<xmax>542</xmax>
+			<ymax>693</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>443</xmin>
+			<ymin>196</ymin>
+			<xmax>620</xmax>
+			<ymax>667</ymax>
+		</bndbox>
+	</object>
+</annotation>

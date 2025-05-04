@@ -1,0 +1,32 @@
+<annotation>
+	<filename>04500.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airplane</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>195</xmin>
+			<ymin>201</ymin>
+			<xmax>391</xmax>
+			<ymax>389</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>airplane</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>343</xmin>
+			<ymin>541</ymin>
+			<xmax>591</xmax>
+			<ymax>726</ymax>
+		</bndbox>
+	</object>
+</annotation>

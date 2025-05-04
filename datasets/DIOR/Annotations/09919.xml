@@ -1,0 +1,32 @@
+<annotation>
+	<filename>09919.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>basketballcourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>413</xmin>
+			<ymin>411</ymin>
+			<xmax>581</xmax>
+			<ymax>700</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>122</xmin>
+			<ymin>84</ymin>
+			<xmax>162</xmax>
+			<ymax>128</ymax>
+		</bndbox>
+	</object>
+</annotation>

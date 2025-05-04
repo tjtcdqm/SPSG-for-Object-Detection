@@ -1,0 +1,32 @@
+<annotation>
+	<filename>18828.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>stadium</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>681</xmin>
+			<ymin>145</ymin>
+			<xmax>770</xmax>
+			<ymax>248</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Expressway-toll-station</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>339</xmin>
+			<ymin>532</ymin>
+			<xmax>353</xmax>
+			<ymax>551</ymax>
+		</bndbox>
+	</object>
+</annotation>

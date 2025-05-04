@@ -1,0 +1,32 @@
+<annotation>
+	<filename>07180.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Expressway-Service-area</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>566</xmin>
+			<ymin>578</ymin>
+			<xmax>621</xmax>
+			<ymax>730</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Expressway-Service-area</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>621</xmin>
+			<ymin>621</ymin>
+			<xmax>676</xmax>
+			<ymax>765</ymax>
+		</bndbox>
+	</object>
+</annotation>

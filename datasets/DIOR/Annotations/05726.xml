@@ -1,0 +1,22 @@
+<annotation>
+	<filename>05726.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>191</xmin>
+			<ymin>302</ymin>
+			<xmax>647</xmax>
+			<ymax>449</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>08113.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airplane</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>409</xmin>
+			<ymin>267</ymin>
+			<xmax>664</xmax>
+			<ymax>513</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>65</xmin>
+			<ymin>468</ymin>
+			<xmax>112</xmax>
+			<ymax>494</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>17646.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>dam</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>314</xmin>
+			<ymin>432</ymin>
+			<xmax>415</xmax>
+			<ymax>670</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>bridge</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>119</xmin>
+			<ymin>640</ymin>
+			<xmax>306</xmax>
+			<ymax>700</ymax>
+		</bndbox>
+	</object>
+</annotation>

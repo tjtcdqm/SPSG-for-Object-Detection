@@ -1,0 +1,32 @@
+<annotation>
+	<filename>16819.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>797</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>136</xmin>
+			<ymin>359</ymin>
+			<xmax>613</xmax>
+			<ymax>558</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>635</xmin>
+			<ymin>172</ymin>
+			<xmax>645</xmax>
+			<ymax>177</ymax>
+		</bndbox>
+	</object>
+</annotation>

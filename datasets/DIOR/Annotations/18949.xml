@@ -1,0 +1,32 @@
+<annotation>
+	<filename>18949.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>106</xmin>
+			<ymin>286</ymin>
+			<xmax>156</xmax>
+			<ymax>329</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>684</xmin>
+			<ymin>344</ymin>
+			<xmax>746</xmax>
+			<ymax>399</ymax>
+		</bndbox>
+	</object>
+</annotation>

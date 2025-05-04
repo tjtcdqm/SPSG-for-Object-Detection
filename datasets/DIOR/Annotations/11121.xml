@@ -1,0 +1,32 @@
+<annotation>
+	<filename>11121.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>ship</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>191</xmin>
+			<ymin>110</ymin>
+			<xmax>267</xmax>
+			<ymax>350</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>ship</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>110</xmin>
+			<ymin>88</ymin>
+			<xmax>154</xmax>
+			<ymax>183</ymax>
+		</bndbox>
+	</object>
+</annotation>

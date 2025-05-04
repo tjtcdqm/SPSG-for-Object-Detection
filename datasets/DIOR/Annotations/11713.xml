@@ -1,0 +1,32 @@
+<annotation>
+	<filename>11713.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>565</xmin>
+			<ymin>186</ymin>
+			<xmax>579</xmax>
+			<ymax>246</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>176</xmin>
+			<ymin>153</ymin>
+			<xmax>396</xmax>
+			<ymax>218</ymax>
+		</bndbox>
+	</object>
+</annotation>

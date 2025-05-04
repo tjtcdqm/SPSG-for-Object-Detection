@@ -1,0 +1,22 @@
+<annotation>
+	<filename>21622.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>chimney</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>186</xmin>
+			<ymin>231</ymin>
+			<xmax>406</xmax>
+			<ymax>419</ymax>
+		</bndbox>
+	</object>
+</annotation>

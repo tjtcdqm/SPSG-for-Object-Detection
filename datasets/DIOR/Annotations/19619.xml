@@ -1,0 +1,22 @@
+<annotation>
+	<filename>19619.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>groundtrackfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>247</xmin>
+			<ymin>54</ymin>
+			<xmax>579</xmax>
+			<ymax>679</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,32 @@
+<annotation>
+	<filename>15386.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>trainstation</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>286</xmin>
+			<ymin>113</ymin>
+			<xmax>365</xmax>
+			<ymax>521</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>ship</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>465</xmin>
+			<ymin>455</ymin>
+			<xmax>516</xmax>
+			<ymax>725</ymax>
+		</bndbox>
+	</object>
+</annotation>

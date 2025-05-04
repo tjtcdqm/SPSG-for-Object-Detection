@@ -1,0 +1,32 @@
+<annotation>
+	<filename>20096.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Expressway-toll-station</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>272</xmin>
+			<ymin>389</ymin>
+			<xmax>498</xmax>
+			<ymax>551</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>vehicle</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>234</xmin>
+			<ymin>63</ymin>
+			<xmax>261</xmax>
+			<ymax>98</ymax>
+		</bndbox>
+	</object>
+</annotation>

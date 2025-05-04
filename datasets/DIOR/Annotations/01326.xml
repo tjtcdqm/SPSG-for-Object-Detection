@@ -1,0 +1,22 @@
+<annotation>
+	<filename>01326.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>airport</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>212</xmin>
+			<ymin>81</ymin>
+			<xmax>650</xmax>
+			<ymax>685</ymax>
+		</bndbox>
+	</object>
+</annotation>

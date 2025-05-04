@@ -1,0 +1,32 @@
+<annotation>
+	<filename>01487.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>basketballcourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>539</xmin>
+			<ymin>614</ymin>
+			<xmax>637</xmax>
+			<ymax>780</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>baseballfield</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>349</xmin>
+			<ymin>53</ymin>
+			<xmax>562</xmax>
+			<ymax>277</ymax>
+		</bndbox>
+	</object>
+</annotation>

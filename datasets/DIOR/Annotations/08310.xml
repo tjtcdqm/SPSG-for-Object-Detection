@@ -1,0 +1,32 @@
+<annotation>
+	<filename>08310.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>stadium</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>235</xmin>
+			<ymin>183</ymin>
+			<xmax>518</xmax>
+			<ymax>570</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>526</xmin>
+			<ymin>44</ymin>
+			<xmax>599</xmax>
+			<ymax>116</ymax>
+		</bndbox>
+	</object>
+</annotation>

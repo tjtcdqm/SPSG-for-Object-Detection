@@ -1,0 +1,32 @@
+<annotation>
+	<filename>20265.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>315</xmin>
+			<ymin>267</ymin>
+			<xmax>490</xmax>
+			<ymax>571</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>overpass</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>406</xmin>
+			<ymin>262</ymin>
+			<xmax>569</xmax>
+			<ymax>568</ymax>
+		</bndbox>
+	</object>
+</annotation>

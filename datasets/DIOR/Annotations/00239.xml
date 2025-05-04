@@ -1,0 +1,32 @@
+<annotation>
+	<filename>00239.jpg</filename>
+	<source>
+		<database>DIOR</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>tenniscourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>215</xmin>
+			<ymin>226</ymin>
+			<xmax>366</xmax>
+			<ymax>551</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>tenniscourt</name>
+		<pose>Unspecified</pose>
+		<bndbox>
+			<xmin>412</xmin>
+			<ymin>230</ymin>
+			<xmax>563</xmax>
+			<ymax>555</ymax>
+		</bndbox>
+	</object>
+</annotation>
