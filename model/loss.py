@@ -45,7 +45,19 @@ def match_boxes_greedy(victim_boxes, proxy_boxes, iou_threshold=0.5, device='cpu
     return matches
 import torch
 import torch.nn.functional as F
+def ss_ciou_loss(pred_boxes, target_boxes, gamma=0.5):
+    """
+    SS-CIoU Loss = (1 + gamma * exp(-A)) * CIoU Loss
+    A = sqrt(pred_area * target_area)
+    """
+    with torch.no_grad():
+        pred_area = (pred_boxes[:, 2] - pred_boxes[:, 0]) * (pred_boxes[:, 3] - pred_boxes[:, 1])
+        target_area = (target_boxes[:, 2] - target_boxes[:, 0]) * (target_boxes[:, 3] - target_boxes[:, 1])
+        A = torch.sqrt(pred_area * target_area + 1e-6)
+        weight = 1.0 + gamma * torch.exp(-A)
 
+    base_ciou = ciou_loss(pred_boxes, target_boxes)
+    return weight * base_ciou
 def soft_focal_loss(pred_logits, soft_targets, gamma=2.0, weights=None, reduction='mean'):
     """
     Soft-label version of Focal Loss for classification distillation.
@@ -146,7 +158,7 @@ def ciou_loss(pred_boxes, target_boxes, reduction='mean', eps=1e-7):
     else:
         return loss
 class DetectionDistillLoss(nn.Module):
-    def __init__(self, location_loss_fn=ciou_loss, classification_loss_fn=soft_focal_loss,
+    def __init__(self, location_loss_fn=ss_ciou_loss, classification_loss_fn=soft_focal_loss,
                  iou_threshold=0.5, loc_weight=1.0, cls_weight=1.0):
         """
         location_loss_fn: 回归损失函数（例如 CIoU、GIoU）

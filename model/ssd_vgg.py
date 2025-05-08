@@ -358,9 +358,19 @@ class SSD300_vgg(nn.Module):
         conv4_3_feats, conv7_feats = self.base(image)  # (N, 512, 38, 38), (N, 1024, 19, 19)
 
         # Rescale conv4_3 after L2 norm
+        eps = 1e-10
         norm = conv4_3_feats.pow(2).sum(dim=1, keepdim=True).sqrt()  # (N, 1, 38, 38)
+        if (norm == 0).any():
+            print("Warning: norm contains zero values!")
+            print("norm stats:", norm.min(), norm.max())
+            norm = norm + eps
         conv4_3_feats = conv4_3_feats / norm  # (N, 512, 38, 38)
         conv4_3_feats = conv4_3_feats * self.rescale_factors  # (N, 512, 38, 38)
+        if torch.isnan(conv4_3_feats).any():
+            print("NaN detected in conv4_3_feats!")
+            print("norm stats:", norm.min(), norm.max())
+            print("input stats:", image.min(), image.max())
+            raise ValueError("Detected NaN in forward pass")
         # (PyTorch autobroadcasts singleton dimensions during arithmetic)
 
         # Run auxiliary convolutions (higher level feature map generators)
@@ -494,7 +504,7 @@ class SSD300_vgg(nn.Module):
 
                 # A torch.uint8 (byte) tensor to keep track of which predicted boxes to suppress
                 # 1 implies suppress, 0 implies don't suppress
-                suppress = torch.zeros((n_above_min_score), dtype=torch.uint8).to(device)  # (n_qualified)
+                suppress = torch.zeros((n_above_min_score), dtype=torch.bool).to(device)  # (n_qualified)
 
                 # Consider each box in order of decreasing scores
                 for box in range(class_decoded_locs.size(0)):
@@ -511,17 +521,38 @@ class SSD300_vgg(nn.Module):
                     suppress[box] = 0
 
                 # Store only unsuppressed boxes for this class
-                image_boxes.append(class_decoded_locs[1 - suppress])
-                image_labels.append(torch.LongTensor((1 - suppress).sum().item() * [c]).to(device))
-                image_scores.append(class_scores[1 - suppress])
-                image_logits.append(class_logits[1-suppress])
+                image_boxes.append(class_decoded_locs[~suppress])
+                image_labels.append(torch.LongTensor((~suppress).sum().item() * [c]).to(device))
+                image_scores.append(class_scores[~suppress])
+                image_logits.append(class_logits[~suppress])
 
             # If no object in any class is found, store a placeholder for 'background'
             if len(image_boxes) == 0:
-                image_boxes.append(torch.FloatTensor([[0., 0., 1., 1.]]).to(device))
-                image_labels.append(torch.LongTensor([0]).to(device))
-                image_scores.append(torch.FloatTensor([0.]).to(device))
-                image_logits.append(torch.zeros(self.n_classes,dtype=float).to(device))
+                # image_boxes.append(torch.FloatTensor([[0., 0., 1., 1.]]).to(device))
+                # image_labels.append(torch.LongTensor([0]).to(device))
+                # image_scores.append(torch.FloatTensor([0.]).to(device))
+                # image_logits.append(torch.zeros(1,self.n_classes,dtype=float).to(device))
+
+                # Step 1: 对 logits 做 softmax 得到置信度分数
+                scores = F.softmax(predicted_scores[i], dim=1)  # shape: (num_anchors, n_classes)
+
+                # Step 2: 找出每个 anchor 中置信度最高的类别的得分和类别 ID
+                max_scores, best_labels = scores.max(dim=1)     # shape: (num_anchors, )
+
+                # Step 3: 找出整体得分最高的那个 anchor
+                best_score, best_idx = max_scores.max(dim=0)    # scalar score & index
+
+                # Step 4: 提取对应的 box、label、logit
+                best_box = decoded_locs[best_idx].unsqueeze(0)  # shape: [1, 4]
+                best_label = best_labels[best_idx].unsqueeze(0)    # shape: [1]
+                best_logit = predicted_scores_logits[i][best_idx].unsqueeze(0)  # shape: [1, n_classes]
+
+                # Step 5: 添加到结果中
+                image_boxes.append(best_box)
+                image_labels.append(best_label)
+                image_scores.append(best_score.unsqueeze(0))       # shape: [1]
+                image_logits.append(best_logit)                    # shape: [1, n_classes]
+
 
             # Concatenate into single tensors
             image_boxes = torch.cat(image_boxes, dim=0)  # (n_objects, 4)

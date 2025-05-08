@@ -1,6 +1,7 @@
 import torch
 import random
 from datetime import datetime
+from tqdm import tqdm
 import os
 import os.path as osp
 from torch.utils.data import Dataset, DataLoader
@@ -127,7 +128,7 @@ def calculate_voc_mAP(det_boxes, det_labels, det_scores,
     for iou_thresh in iou_thresholds:
         for c in range(1, n_classes):  # skip background
             true_class_images = true_images[true_labels == c]
-            true_class_boxes = true_boxes[true_labels == c]
+            true_class_boxes = true_boxes[true_labels == c].to(device)
             n_class_objects = true_class_boxes.size(0)
             true_class_boxes_detected = torch.zeros((n_class_objects), dtype=torch.uint8).to(device)
 
@@ -157,7 +158,7 @@ def calculate_voc_mAP(det_boxes, det_labels, det_scores,
                 overlaps = box_iou(this_box, object_boxes).squeeze(0)
                 max_overlap, ind = overlaps.max(dim=0)
 
-                original_ind = torch.LongTensor(range(true_class_boxes.size(0)))[true_class_images == this_image][ind]
+                original_ind = torch.LongTensor(range(true_class_boxes.size(0))).to(device)[true_class_images == this_image][ind]
 
                 if max_overlap.item() > iou_thresh:
                     if true_class_boxes_detected[original_ind] == 0:
@@ -301,7 +302,10 @@ def test_step(model, blackbox, test_loader, criterion, device, label_map,
     all_bb_boxes, all_bb_labels, all_bb_scores = [], [], []
 
     with torch.no_grad():
-        for batch_idx, (images, gt_boxes, gt_labels, gt_difficulties) in enumerate(test_loader):
+        # for batch_idx, (images, gt_boxes, gt_labels, gt_difficulties) in enumerate(test_loader):
+        # for batch_idx, (images, gt_boxes, gt_labels, gt_difficulties) in enumerate(test_loader):
+        for batch_idx, (images, gt_boxes, gt_labels, gt_difficulties) in enumerate(tqdm(test_loader, desc=f"Testing Epoch {epoch}")):
+
             images = images.to(device)
             # GT
             # gt_boxes = [t['boxes'].to(device) for t in targets]
@@ -363,7 +367,7 @@ def test_step(model, blackbox, test_loader, criterion, device, label_map,
     )
 
     if not silent:
-        print(f"[Test] Epoch: {epoch} | Loss: {test_loss:.4f} | "
+        print(f"[Test] Epoch: {epoch} | Loss: {test_loss.item():.4f} | "
               f"mAP@0.5 (GT): {proxy_eval['mAP@0.5']:.2f}% | "
               f"mAP@0.5 (vs Victim): {imitation_eval['mAP@0.5']:.2f}%")
 
@@ -384,7 +388,8 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
     epoch_size = len(train_loader.dataset)
     # t_start = time.time()
     nans = 0
-    for batch_idx, (inputs, targets) in enumerate(train_loader):
+    # for batch_idx, (inputs, targets) in enumerate(train_loader):
+    for batch_idx, (inputs, targets) in enumerate(tqdm(train_loader, desc=f"Training Epoch {epoch}")):
         sgs = []
         for idx in  range(inputs.shape[0]):
             with open(targets[idx], 'rb') as rf:
@@ -406,7 +411,7 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
             sgs =  sgs.view(sgs.shape[0],inputs.shape[1],inputs.shape[2],inputs.shape[3])
             inputs =  inputs[mask]
             nans = nans+1
-            print(sgs.shape)
+            # print(sgs.shape)
 
 
         optimizer.zero_grad()
@@ -499,7 +504,7 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
 
             if a.shape[0] > 49 * 3:
                 print("a", a.shape)
-                print("sgs[j]", torch.isnan(sgs[j]).any())
+                # print("sgs[j]", torch.isnan(sgs[j]).any())
             for i in range(a.shape[0]):
                 # newreg是梯度的平均值
                 newreg[j, sgs[j] == a[i]] = newreg[j, sgs[j] == a[i]].view(-1).mean(dim=0)
@@ -539,7 +544,7 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
     # Data loaders
     train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
     if testset is not None:
-        test_loader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+        test_loader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True,collate_fn=testset.collate_fn)
     else:
         test_loader = None
 
@@ -619,7 +624,7 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
             # === Logging ===
             with open(log_path, 'a') as af:
                 # Train 日志行：仅记录 loss
-                train_cols = [run_id, epoch, 'train', f"{train_loss:.4f}", '', '', '']
+                train_cols = [run_id, epoch, 'train', f"{train_loss.item():.4f}", '', '', '']
                 af.write('\t'.join(map(str, train_cols)) + '\n')
 
                 # Test 日志行：记录检测性能和模仿质量
@@ -627,7 +632,7 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
                     run_id,
                     epoch,
                     'test',
-                    f"{test_loss:.4f}",     # procy vs BB
+                    f"{test_loss.item():.4f}",     # procy vs BB
                     f"{gt_mAP50:.2f}",      # proxy vs GT
                     f"{bb_mAP50:.2f}",      # proxy vs BB
                     f"{gt_mAP5095:.2f}",  # proxy vs GT

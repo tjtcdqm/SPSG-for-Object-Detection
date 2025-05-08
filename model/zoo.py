@@ -15,7 +15,7 @@ def get_model(checkpoint_path,model_name,n_classes,device):
         print('your checkoutpoint is ',list(checkpoint.keys()))
         # checkpoint = torch.load(os.path.join(model_dir,'checkpoint_ssd300_NWPU-VHR_best.pth.tar'))
         model = SSD300_vgg(n_classes)
-        best_mAP = checkpoint.get('best_mAP',-1)
+        best_mAP = checkpoint.get('best_mAP50',-1)
         model.load_state_dict(checkpoint['model'])
         model.to(device)
         print('loading {} from {} checkpoint, best_mAP is {}'.format(model_name,checkpoint_path,best_mAP))

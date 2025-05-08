@@ -158,7 +158,8 @@ def main():
 
     # ----------- Set up testset
     testset_root = params['testdataset']
-    testset = PascalVOCDataset(testset_root,'test',True)
+    testset = PascalVOCDataset(testset_root,'val',True)
+    print("length of testset is ",len(testset))
 
     # 获取种类数量
     with open(os.path.join(testset_root,'label_map.json'), 'r') as file:
@@ -170,7 +171,7 @@ def main():
     pretrained_root = params['pretrained_root']
     proxy_model = get_model(pretrained_root,model_name,n_classes,device)
 
-    # ----------- set up victim model
+    # ----------- Set up victim model
     victim_dir = params['victim_model_dir']
     victim_name='ssd300_vgg'
     victim_checkpoint = osp.join(victim_dir,'checkpoint_{}_nwpu-vhr.pth.tar'.format(victim_name))

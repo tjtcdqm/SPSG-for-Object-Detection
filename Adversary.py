@@ -17,6 +17,11 @@ class RandomAdversary(object):
 
         self.transferset = []  # List of tuples [(img_path, output_probs)]
         self.out_dir = transfer_out_path
+        self.log_path = osp.join(self.out_dir, 'transferset.log.tsv')
+        if not osp.exists(self.log_path):
+            with open(self.log_path, 'w') as wf:
+                columns = ['run_id', 'batch','cur_pic_num' 'total_query','status']
+                wf.write('\t'.join(columns) + '\n')
         self._restart()
 
     def _restart(self):
@@ -43,6 +48,7 @@ class RandomAdversary(object):
         """
         start_B = 0
         end_B = budget
+        run_id = 0
         with tqdm(total=budget) as pbar:
             # for t, B in enumerate(range(start_B, end_B, self.batch_size)):
             while start_B < end_B:
@@ -85,8 +91,14 @@ class RandomAdversary(object):
                     with open(final_path, "wb") as wf:
                         pickle.dump(sg,wf)
                     self.transferset.append((img_path,final_path))
-                
-                print('=> transfer set ({} samples) written to: {}'.format(self.batch_size, self.out_dir))
+                    # 记录成功的样本信息
+
+                with open(self.log_path, 'a') as af:
+                    log_cols = [run_id, start_B // self.batch_size, len(self.transferset) ,self.blackbox.get_call_count(),'added']
+                    af.write('\t'.join(map(str, log_cols)) + '\n')
+                run_id += 1
+
+                print('=> transfer set ({} samples) written to: {}'.format(self.batch_size - sum(no_object_pic), self.out_dir))
                 start_B += self.batch_size
                 pbar.update(x_t.size(0)-sum(no_object_pic))
         return self.transferset

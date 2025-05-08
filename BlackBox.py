@@ -3,7 +3,6 @@
 Replace this with a more detailed description of what this file contains.
 """
 import argparse
-from ultralytics import YOLO
 import os.path as osp
 import os
 import json
@@ -145,10 +144,13 @@ class Blackbox(object):
                 gt_idx = matched_gt_idx[i]
                 gt_logit = gt_logits[gt_idx]
                 det_logit = det_logits[i]
-
-                target_class = gt_logit.argmax().unsqueeze(0)
-                ce_loss = F.cross_entropy(det_logit.unsqueeze(0), target_class)
-                loss += ce_loss
+                # Softmax + log_softmax + KL 散度
+                P = F.softmax(gt_logit, dim=-1)
+                Q_log = F.log_softmax(det_logit, dim=-1)
+                kl_loss = F.kl_div(Q_log, P, reduction='batchmean') 
+                # target_class = gt_logit.argmax().unsqueeze(0)
+                # ce_loss = F.cross_entropy(det_logit.unsqueeze(0), target_class)
+                loss += kl_loss
                 count += 1
 
         # 2. 新增框（扰动后才出现，gt中无匹配）
@@ -157,7 +159,7 @@ class Blackbox(object):
             # det_logit = det_logits[idx]
             # 惩罚新增框的存在，可简单用其最大softmax得分作为“虚假置信度”
             # softmax_score = torch.softmax(det_logit, dim=0).max()
-            loss += det_scores[idx]  # 可以乘以权重
+            loss += det_scores[idx] * 0.5 # 可以乘以权重
             count += 1
 
         # 3. 消失框（扰动前存在，扰动后不见了）
@@ -167,7 +169,7 @@ class Blackbox(object):
             # gt_logit = gt_logits[idx]
             # 惩罚这个框的消失，可以用其原始分类置信度
             # softmax_score = torch.softmax(gt_logit, dim=0).max()
-            loss += gt_scores[idx]
+            loss += gt_scores[idx] * 0.5
             count += 1
 
         if count == 0:
@@ -210,8 +212,9 @@ class Blackbox(object):
 
             sample_tensor = torch.tensor(copy.deepcopy(sample)).unsqueeze(dim=0).permute(0, 3, 1, 2)
             sample_tensor = sample_tensor.to(self.device)
-            gt_boxes, gt_labels, gt_scores,gt_logits= self.__call__(sample_tensor)
-            if len(gt_boxes[0]) == 1 and gt_labels[0][0] == 0:
+            before_call_count =self.__call_count
+            det_boxes, det_labels, det_scores,det_logits= self.__call__(sample_tensor)
+            if len(det_boxes[0]) == 1 and det_labels[0][0] == 0:
                 # 没有目标在图中
                 no_object_pic[i] = 1
                 SGs.append([])
@@ -233,10 +236,20 @@ class Blackbox(object):
 
                             sample_permutation1[0, channel][(segments == x) ] += 1e-4
                             query_input1 = sample_permutation1.to(self.device)
-                            det_boxes_batch, det_labels_batch, det_scores_batch,det_logits_batch  = self.__call__(query_input1)
-                            loss = self.getSuperGrandientLoss(gt_boxes[0],gt_labels[0],gt_scores[0],gt_logits[0],
-                                                        det_boxes_batch[0],det_labels_batch[0],det_scores_batch[0],det_logits_batch[0])
+                            gt_boxes_batch, gt_labels_batch, gt_scores_batch,gt_logits_batch  = self.__call__(query_input1)
+                            # loss = self.getSuperGrandientLoss(gt_boxes[0],gt_labels[0],gt_scores[0],gt_logits[0],
+                            #                             det_boxes_batch[0],det_labels_batch[0],det_scores_batch[0],det_logits_batch[0])
+                            loss_original = self.getSuperGrandientLoss(
+                                det_boxes[0], det_labels[0], det_scores[0],det_logits[0],
+                                gt_boxes_batch[0], gt_labels_batch[0], gt_scores_batch[0],gt_logits_batch[0]
+                            ).item()
 
+                            loss_p = self.getSuperGrandientLoss(
+                                gt_boxes_batch[0], gt_labels_batch[0], gt_scores_batch[0],gt_logits_batch[0],
+                                gt_boxes_batch[0], gt_labels_batch[0], gt_scores_batch[0],gt_logits_batch[0]
+                            ).item()
+
+                            loss = loss_p - loss_original
                             a = loss / self.perturbation
                             SG[0, channel][torch.tensor((segments==x))]=a
             # print("call_count",self.__call_count)

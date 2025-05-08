@@ -22,7 +22,7 @@ def calculate(image):
     # y：当 condition 为假时使用的张量。
     # 选出超过最大值的一半的值，和小于最小值一半的值
     image = torch.where((image>=maxpool)|(image<=minpool),image,0)
-    # 进行最大值归一化
+    # 进行最大值归一化到[-1，-0.5][0.5,1]
     image = torch.where((image>=maxpool), image / (2*maxpool),image)
     image = torch.where((image<=minpool), image / (2*maxpool), image)
     return image
