@@ -378,7 +378,7 @@ def test_step(model, blackbox, test_loader, criterion, device, label_map,
 
     return test_loss, proxy_eval['mAP@0.5'], imitation_eval['mAP@0.5'],proxy_eval['mAP@[.50:.95]'],imitation_eval['mAP@[.50:.95]']
 
-def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device, log_interval=10, writer=None):
+def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device, log_interval=10, writer=None,log_path=None):
     model.train()
     train_loss = 0.
     train_losskl = 0.
@@ -442,57 +442,108 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
         # newreg = torch.autograd.grad(lossz, inputs, create_graph=True)[0].view(inputs.shape)
         newreg = torch.autograd.grad(lossz, inputs, create_graph=True)[0].view(inputs.shape)
 
-        inputs_p = []
-        Rsamples =[]
-        types = 10 # 这批图片中超像素分割种类最小的一个超像素数量
-        # sgs中特定的超像素梯度
-        # 超像素梯度净化模块，负责筛选极值梯度，并进行归一化
-        sgs = calculate(sgs).view(inputs.shape)
-        for j in range(sgs.shape[0]):
-            a = sgs[j].unique()
-            if types >= a.shape[0]:
-                types = a.shape[0]
-            # random.sample(population, k) 函数确保从 population 中抽取的每个元素都是唯一的，即每个元素只能被抽取一次。
-            # 如果k>population的长度会出现异常
-            Rsamples.append(random.sample(list(range(a.shape[0])), a.shape[0]))
+        # inputs_p = []
+        # types = 10 # 这批图片中超像素分割种类最小的一个超像素数量
+        # # sgs中特定的超像素梯度
+        # # 超像素梯度净化模块，负责筛选极值梯度，并进行归一化
+        # sgs = calculate(sgs).view(inputs.shape)
+        # for j in range(sgs.shape[0]):
+        #     a = sgs[j].unique()
+        #     if types >= a.shape[0]:
+        #         types = a.shape[0]
+        #     # random.sample(population, k) 函数确保从 population 中抽取的每个元素都是唯一的，即每个元素只能被抽取一次。
+        #     # 如果k>population的长度会出现异常
+        #     Rsamples.append(random.sample(list(range(a.shape[0])), a.shape[0]))
         # for time in range(types):
         #     print(types)
         #     # inputs_p中每一个元素都是一个（N,C,H,W）的一批图片
         #     inputs_p.append(inputs.clone().detach())
 
-        losskk = []
-        for xiao in range(types):
-            # 占用 1M
-            input_p = inputs.clone().detach()
-        # for xiao,input_p in enumerate(inputs_p):
-            #这个循环给每一张图片中的随机的一个超像素添加一个小扰动
-            for j in range(sgs.shape[0]):
-                a = sgs[j].unique()
-                mask = sgs[j] == a[Rsamples[j][xiao]]
-                input_p[j,mask] = input_p[j,mask] + 1e-4
-                del mask
+        # SG 归一化后的超像素梯度图，形状: [B, C, H, W]
+        sgs = calculate(sgs).view(inputs.shape)
 
-            # 占用100M 罪魁祸首
-            predicted_locs, predicted_scores= model(input_p)
-            det_boxes_p,det_labels_p,det_scores_p,det_logits_p =model.detect_objects(predicted_locs, predicted_scores,
-                                                                                    min_score=0.01, max_overlap=0.45,
-                                                                                    top_k=200)
-            with torch.no_grad():
-                victim_boxes_p,victim_labels_p,victime_scors_p,victim_logits_p = blackbox(input_p)
-                victim_boxes=recursive_clone(victim_boxes)
-                victim_labels=recursive_clone(victim_labels)
-                victim_scores=recursive_clone(victim_scores)
-                victim_logits=recursive_clone(victim_logits)
-                # _, predict_p = box_outputs_p.max(1)
-            if criterion==None:
-                assert False
-            else:
-                # outputs是代理模型输出
-                # box_outputs是受害者模型输出
-                loss_p = criterion(det_boxes_p,det_labels_p,det_scores_p,det_logits_p,
-                                    victim_boxes_p,victim_labels_p,victime_scors_p,victim_logits_p)
+        # 克隆输入用于扰动
+
+        losskk = []
+        targets_sgs = [-1.,-0.5,0.5,1.]
+        for targets_sg in targets_sgs:
+        # 每张图片扰动一次：选取平均 SG 最接近 +1 的超像素
+            input_p = inputs.clone().detach()
+            for j in range(sgs.shape[0]):  # 遍历每张图片
+                sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
+                sp_ids = sg_avg.unique()
+
+                best_sp = None
+                min_diff = float('inf')
                 
-                losskk.append(loss_p)
+                for sp_id in sp_ids:
+                    mask = (sg_avg == sp_id)
+                    avg_val = sg_avg[mask].unique().item()
+                    diff = abs(avg_val - targets_sg)
+                    if diff < min_diff:
+                        min_diff = diff
+                        best_sp = sp_id
+
+                # 在最接近 +1 的超像素区域添加扰动（3通道）
+                if best_sp is not None:
+                    for c in range(3):  # 每个通道都加扰动
+                        input_p[j, c][sgs[j][0] == best_sp] += 1e-4
+
+            # 前向传播（扰动后）
+            predicted_locs, predicted_scores = model(input_p)
+            det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
+                predicted_locs, predicted_scores,
+                min_score=0.01, max_overlap=0.50, top_k=200
+            )
+
+            # victim 模型前向
+            with torch.no_grad():
+                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
+                victim_boxes_p = recursive_clone(victim_boxes_p)
+                victim_labels_p = recursive_clone(victim_labels_p)
+                victim_scores_p = recursive_clone(victim_scores_p)
+                victim_logits_p = recursive_clone(victim_logits_p)
+
+            # 计算扰动后的 loss（代替 sum(losskk)）
+            loss_perturb = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
+                                    victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
+            losskk.append(loss_perturb)
+
+
+
+        # losskk = []
+        # for xiao in range(types):
+        #     # 占用 1M
+        #     input_p = inputs.clone().detach()
+        # # for xiao,input_p in enumerate(inputs_p):
+        #     #这个循环给每一张图片中的随机的一个超像素添加一个小扰动
+        #     for j in range(sgs.shape[0]):
+        #         a = sgs[j].unique()
+        #         mask = sgs[j] == a[Rsamples[j][xiao]]
+        #         input_p[j,mask] = input_p[j,mask] + 1e-4
+        #         del mask
+
+        #     # 占用100M 罪魁祸首
+        #     predicted_locs, predicted_scores= model(input_p)
+        #     det_boxes_p,det_labels_p,det_scores_p,det_logits_p =model.detect_objects(predicted_locs, predicted_scores,
+        #                                                                             min_score=0.01, max_overlap=0.45,
+        #                                                                             top_k=200)
+        #     with torch.no_grad():
+        #         victim_boxes_p,victim_labels_p,victime_scors_p,victim_logits_p = blackbox(input_p)
+        #         victim_boxes=recursive_clone(victim_boxes)
+        #         victim_labels=recursive_clone(victim_labels)
+        #         victim_scores=recursive_clone(victim_scores)
+        #         victim_logits=recursive_clone(victim_logits)
+        #         # _, predict_p = box_outputs_p.max(1)
+        #     if criterion==None:
+        #         assert False
+        #     else:
+        #         # outputs是代理模型输出
+        #         # box_outputs是受害者模型输出
+        #         loss_p = criterion(det_boxes_p,det_labels_p,det_scores_p,det_logits_p,
+        #                             victim_boxes_p,victim_labels_p,victime_scors_p,victim_logits_p)
+                
+        #         losskk.append(loss_p)
             # del inputs_p
             # del predicted_locs,predicted_scores
 
@@ -519,16 +570,31 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
 
 
         with torch.no_grad():
-            a = torch.exp(lossz.detach() - losskl.detach() - 3)
-            a = torch.clamp(a, min=0.1, max=10.0)  # 稳定范围
+            # lossz 和 losskl 都是标量
+            delta = lossz.detach() - losskl.detach()
+            
+            # 控制范围 [min_val, max_val]
+            min_val, max_val = 0.1, 2.0
+            a = torch.sigmoid(delta) * (max_val - min_val) + min_val
+        # with torch.no_grad():
+        #     a = torch.exp(lossz.detach() - losskl.detach() - 3)
+        #     a = torch.clamp(a, min=0.1, max=10.0)  # 稳定范围
 
-        loss  = lossz + sum(losskk) + a*losskl
-        loss.backward()
+        # loss  = lossz + sum(losskk) + a*losskl
+        loss  = lossz  + a*losskl
+
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
+        print("\nloss is {:.4f},lossz is {:.4f},sum(losskk) is {:.4f},losskl is {:.4f} , a is {:.4f}".format(
+            loss.item(),lossz.item(),sum(losskk).item(),losskl.item(),a.item()
+        ))
+        # === Logging ===
+        with open(log_path, 'a') as af:
+            # Train 日志行：仅记录 loss
+            train_cols = [batch_idx, epoch, 'train', f"{loss.item():.4f}", '', '', '']
+            af.write('\t'.join(map(str, train_cols)) + '\n')
 
-        if writer is not None:
-            pass
-    return loss.clone().detach()
+    return 
 
 def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64, 
                 criterion_train=None, criterion_test=None, testset=None,
@@ -593,13 +659,13 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
     log_path = osp.join(out_path, 'train{}.log.tsv'.format(checkpoint_suffix))
     if not osp.exists(log_path):
         with open(log_path, 'w') as wf:
-            columns = ['run_id', 'epoch', 'split', 'loss', 'accuracy', 'best_accuracy']
+            columns = ['run_id/batch_id', 'epoch', 'split', 'loss', 'gt_mAP50', 'bb_mAP50','bb_mAP5095','best_bb_mAP50']
             wf.write('\t'.join(columns) + '\n')
 
     model_out_path = osp.join(out_path, 'checkpoint{}.pth.tar'.format(checkpoint_suffix))
     for epoch in range(start_epoch, epochs + 1):
-        train_loss = train_step(model,blackbox, train_loader, criterion_train, optimizer, epoch, device,
-                                           log_interval=log_interval)
+        train_step(model,blackbox, train_loader, criterion_train, optimizer, epoch, device,
+                                           log_interval=log_interval,log_path=log_path)
         scheduler.step(epoch)
 
         if test_loader is not None and epoch % eval_time == 0:
@@ -621,12 +687,7 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
                 }
                 torch.save(state, model_out_path)
 
-            # === Logging ===
             with open(log_path, 'a') as af:
-                # Train 日志行：仅记录 loss
-                train_cols = [run_id, epoch, 'train', f"{train_loss.item():.4f}", '', '', '']
-                af.write('\t'.join(map(str, train_cols)) + '\n')
-
                 # Test 日志行：记录检测性能和模仿质量
                 test_cols = [
                     run_id,
