@@ -464,50 +464,49 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
 
         # 克隆输入用于扰动
 
-        losskk = []
         targets_sgs = [-1.,-0.5,0.5,1.]
-        for targets_sg in targets_sgs:
+        random_sg = torch.randint(low=0, high=3, size=(1,)).item() 
+        target_sg = targets_sgs[random_sg]
+        # for targets_sg in targets_sgs:
         # 每张图片扰动一次：选取平均 SG 最接近 +1 的超像素
-            input_p = inputs.clone().detach()
-            for j in range(sgs.shape[0]):  # 遍历每张图片
-                sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
-                sp_ids = sg_avg.unique()
+        input_p = inputs.clone().detach()
+        for j in range(sgs.shape[0]):  # 遍历每张图片
+            sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
+            sps = sg_avg.unique()
 
-                best_sp = None
-                min_diff = float('inf')
-                
-                for sp_id in sp_ids:
-                    mask = (sg_avg == sp_id)
-                    avg_val = sg_avg[mask].unique().item()
-                    diff = abs(avg_val - targets_sg)
-                    if diff < min_diff:
-                        min_diff = diff
-                        best_sp = sp_id
+            best_sp = None
+            min_diff = float('inf')
+            
+            for sp in sps:
+                diff = abs(sp- target_sg)
+                if diff < min_diff:
+                    min_diff = diff
+                    best_sp = sp
 
-                # 在最接近 +1 的超像素区域添加扰动（3通道）
-                if best_sp is not None:
-                    for c in range(3):  # 每个通道都加扰动
-                        input_p[j, c][sgs[j][0] == best_sp] += 1e-4
+            # 在最接近 +1 的超像素区域添加扰动（3通道）
+            if best_sp is not None:
+                mask=sg_avg == best_sp
+                for c in range(3):  # 每个通道都加扰动
+                    input_p[j, c][mask] += 1e-4
 
-            # 前向传播（扰动后）
-            predicted_locs, predicted_scores = model(input_p)
-            det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
-                predicted_locs, predicted_scores,
-                min_score=0.01, max_overlap=0.50, top_k=200
-            )
+        # 前向传播（扰动后）
+        predicted_locs_p, predicted_scores_p = model(input_p)
+        det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
+            predicted_locs_p, predicted_scores_p,
+            min_score=0.01, max_overlap=0.50, top_k=200
+        )
 
-            # victim 模型前向
-            with torch.no_grad():
-                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
-                victim_boxes_p = recursive_clone(victim_boxes_p)
-                victim_labels_p = recursive_clone(victim_labels_p)
-                victim_scores_p = recursive_clone(victim_scores_p)
-                victim_logits_p = recursive_clone(victim_logits_p)
+        # victim 模型前向
+        with torch.no_grad():
+            victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
+            victim_boxes_p = recursive_clone(victim_boxes_p)
+            victim_labels_p = recursive_clone(victim_labels_p)
+            victim_scores_p = recursive_clone(victim_scores_p)
+            victim_logits_p = recursive_clone(victim_logits_p)
 
-            # 计算扰动后的 loss（代替 sum(losskk)）
-            loss_perturb = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
-                                    victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
-            losskk.append(loss_perturb)
+        # 计算扰动后的 loss（代替 sum(losskk)）
+        loss_perturb = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
+                                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
 
 
 
@@ -580,13 +579,15 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
         #     a = torch.exp(lossz.detach() - losskl.detach() - 3)
         #     a = torch.clamp(a, min=0.1, max=10.0)  # 稳定范围
 
-        # loss  = lossz + sum(losskk) + a*losskl
-        loss  = lossz  + a*losskl
+        loss  = lossz + loss_perturb + a *losskl
+        # loss  = lossz + loss_perturb 
 
+        loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
-        print("\nloss is {:.4f},lossz is {:.4f},sum(losskk) is {:.4f},losskl is {:.4f} , a is {:.4f}".format(
-            loss.item(),lossz.item(),sum(losskk).item(),losskl.item(),a.item()
+
+        print("\nloss is {:.4f},lossz is {:.4f},loss_p is {:.4f},losskl is {:.4f} ,a is {:.4f}".format(
+            loss.item(),lossz.item(),loss_perturb.item(),losskl.item(),a.item()
         ))
         # === Logging ===
         with open(log_path, 'a') as af:
