@@ -515,24 +515,24 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
                 for c in range(3):  # 每个通道都加扰动
                     input_p[j, c][mask] += 1e-4
 
-            # 前向传播（扰动后）
-            predicted_locs_p, predicted_scores_p = model(input_p)
-            det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
-                predicted_locs_p, predicted_scores_p,
-                min_score=0.01, max_overlap=0.50, top_k=200
-            )
+        # 前向传播（扰动后）
+        predicted_locs_p, predicted_scores_p = model(input_p)
+        det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
+            predicted_locs_p, predicted_scores_p,
+            min_score=0.01, max_overlap=0.50, top_k=200
+        )
 
-            # victim 模型前向
-            with torch.no_grad():
-                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
-                victim_boxes_p = recursive_clone(victim_boxes_p)
-                victim_labels_p = recursive_clone(victim_labels_p)
-                victim_scores_p = recursive_clone(victim_scores_p)
-                victim_logits_p = recursive_clone(victim_logits_p)
+        # victim 模型前向
+        with torch.no_grad():
+            victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
+            victim_boxes_p = recursive_clone(victim_boxes_p)
+            victim_labels_p = recursive_clone(victim_labels_p)
+            victim_scores_p = recursive_clone(victim_scores_p)
+            victim_logits_p = recursive_clone(victim_logits_p)
 
-            # 计算扰动后的 loss（代替 sum(losskk)）
-            loss_p = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
-                                    victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
+        # 计算扰动后的 loss（代替 sum(losskk)）
+        loss_p = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
+                                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
 
             # losskk.append(loss_p)
 

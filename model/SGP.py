@@ -59,44 +59,44 @@ def calculate(image, beta=0.5):
 
     # print(normalized.requires_grad)
     return normalized
-# def calculate2(image, sgs):
-#     N, C, H, W = image.shape
-#     device = image.device
+def calculate2(image, sgs):
+    N, C, H, W = image.shape
+    device = image.device
 
-#     image2 = image.clone() * (sgs != 0)
-#     image2 = image2.view(N, C, -1)
-
-#     min_val, _ = image2.min(dim=2, keepdim=True)
-#     max_val, _ = image2.max(dim=2, keepdim=True)
-
-#     min_val[min_val.abs() < 1e-6] = -1e-6
-#     max_val[max_val.abs() < 1e-6] = 1e-6
-
-#     pos_mask = image2 > 0
-#     neg_mask = image2 < 0
-
-#     normed = torch.zeros_like(image2)
-#     normed[pos_mask] = image2[pos_mask] / max_val.expand_as(image2)[pos_mask]
-#     normed[neg_mask] = image2[neg_mask] / min_val.expand_as(image2)[neg_mask]
-#     normed[neg_mask] *= -1  # 保证负方向归一化为 [-1, 0]
-
-#     normed = normed.view(N, C, H, W)
-#     normed = normed * (sgs != 0)
-
-#     assert not torch.isnan(normed).any(), "NaN in calculate2 output"
-#     # print(normed.requires_grad)
-#     return normed
-
-def calculate2(image,sgs):
-
-    # 归一化处理image 分母为sgs中绝对值最大的梯度
-    image2 = image.clone().detach()*(sgs!=0)
-    N, C, H, W = image.shape[:4]
-    image = image.view(N, C, -1)
+    image2 = image.clone() * (sgs != 0)
     image2 = image2.view(N, C, -1)
-    maxpool,_ = image2.abs().max(2)
-    maxpool = maxpool.unsqueeze(2).expand(N,C,H*W)
 
-    image =  image / (maxpool)
-    assert not torch.isnan(image).any(), "NaN in calculate2 output"
-    return image
+    min_val, _ = image2.min(dim=2, keepdim=True)
+    max_val, _ = image2.max(dim=2, keepdim=True)
+
+    min_val[min_val.abs() < 1e-6] = -1e-6
+    max_val[max_val.abs() < 1e-6] = 1e-6
+
+    pos_mask = image2 > 0
+    neg_mask = image2 < 0
+
+    normed = torch.zeros_like(image2)
+    normed[pos_mask] = image2[pos_mask] / max_val.expand_as(image2)[pos_mask]
+    normed[neg_mask] = image2[neg_mask] / min_val.expand_as(image2)[neg_mask]
+    normed[neg_mask] *= -1  # 保证负方向归一化为 [-1, 0]
+
+    normed = normed.view(N, C, H, W)
+    normed = normed * (sgs != 0)
+
+    assert not torch.isnan(normed).any(), "NaN in calculate2 output"
+    # print(normed.requires_grad)
+    return normed
+
+# def calculate2(image,sgs):
+
+#     # 归一化处理image 分母为sgs中绝对值最大的梯度
+#     image2 = image.clone().detach()*(sgs!=0)
+#     N, C, H, W = image.shape[:4]
+#     image = image.view(N, C, -1)
+#     image2 = image2.view(N, C, -1)
+#     maxpool,_ = image2.abs().max(2)
+#     maxpool = maxpool.unsqueeze(2).expand(N,C,H*W)
+
+#     image =  image / (maxpool)
+#     assert not torch.isnan(image).any(), "NaN in calculate2 output"
+#     return image
