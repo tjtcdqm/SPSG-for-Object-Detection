@@ -480,40 +480,40 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
 
         # 克隆输入用于扰动
 
-        losskk = []
-        targets_sgs = [-1.,-0.5,0.5,1.]
-        random_sg = torch.randint(low=0, high=3, size=(1,)).item() 
-        targets_sg = targets_sgs[random_sg]
-        for i in range(2):
+        # losskk = []
+        # targets_sgs = [-1.,-0.5,0.5,1.]
+        # targets_sg = targets_sgs[random_sg]
+        # for i in range(2):
             # 每张图片扰动一次：选取平均 SG 最接近 +1 的超像素
-            input_p = inputs.clone().detach()
-            for j in range(sgs.shape[0]):  # 遍历每张图片
-                sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
-                sps = sg_avg.unique()
+        input_p = inputs.clone().detach()
+        for j in range(sgs.shape[0]):  # 遍历每张图片
+            sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
+            sps = sg_avg.unique()
 
-                targets_sg = None
-                if i == 0:
-                    max_sp ,_= sps.max()
-                    # 在大于零的部分选出一个值
-                    targets_sg = rand_in_range(0,max_sp)
-                else :
-                    min_sp ,_ =sps.min()
-                    targets_sg = rand_in_range(min_sp,0)
+            random_sg = torch.randint(low=0, high=2, size=(1,)).item()  
+            targets_sg = None
+            if random_sg == 0:
+                max_sp ,_= sps.max(dim=0)
+                # 在大于零的部分选出一个值
+                targets_sg = rand_in_range(0,max_sp+1e-6)
+            else :
+                min_sp ,_ =sps.min(dim=0)
+                targets_sg = rand_in_range(min_sp,0+1e-6)
 
-                best_sp = None
-                min_diff = float('inf')
-                
-                for sp in sps:
-                    diff = abs(sp- targets_sg)
-                    if diff < min_diff:
-                        min_diff = diff
-                        best_sp = sp
+            best_sp = None
+            min_diff = float('inf')
+            
+            for sp in sps:
+                diff = abs(sp- targets_sg)
+                if diff < min_diff:
+                    min_diff = diff
+                    best_sp = sp
 
-                # 在最接近 +1 的超像素区域添加扰动（3通道）
-                if best_sp is not None:
-                    mask=sg_avg == best_sp
-                    for c in range(3):  # 每个通道都加扰动
-                        input_p[j, c][mask] += 1e-4
+            # 在最接近 +1 的超像素区域添加扰动（3通道）
+            if best_sp is not None:
+                mask=sg_avg == best_sp
+                for c in range(3):  # 每个通道都加扰动
+                    input_p[j, c][mask] += 1e-4
 
             # 前向传播（扰动后）
             predicted_locs_p, predicted_scores_p = model(input_p)
@@ -534,7 +534,7 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
             loss_p = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
                                     victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
 
-            losskk.append(loss_p)
+            # losskk.append(loss_p)
 
 
         # losskk = []
@@ -606,14 +606,14 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
         #     a = torch.exp(lossz.detach() - losskl.detach() - 3)
         #     a = torch.clamp(a, min=0.1, max=10.0)  # 稳定范围
 
-        loss  = lossz +  sum(losskk) + a *losskl
+        loss  = lossz +  loss_p + a *losskl
 
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
 
-        print("\nloss is {:.4f},lossz is {:.4f},sum(losskk) is {:.4f},losskl is {:.4f} ,a is {:.4f}, call_count is {}".format(
-            loss.item(),sum(losskk).item(),loss_p.item(),losskl.item(),a.item(),blackbox.get_call_count()
+        print("\nloss is {:.4f},lossz is {:.4f},loss_p is {:.4f},losskl is {:.4f} ,a is {:.4f}".format(
+            loss.item(),lossz.item(),loss_p.item(),losskl.item(),a.item()
         ))
         # === Logging ===
         with open(log_path, 'a') as af:
