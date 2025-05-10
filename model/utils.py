@@ -39,7 +39,23 @@ def cxcy_to_xy(cxcy):
     return torch.cat([cxcy[:, :2] - (cxcy[:, 2:] / 2),  # x_min, y_min
                       cxcy[:, :2] + (cxcy[:, 2:] / 2)], 1)  # x_max, y_max
 
+import torch
 
+def rand_in_range(low, high, size=None):
+    """
+    在指定区间 [low, high) 内生成服从均匀分布的 PyTorch 张量。
+    
+    参数:
+        low (float): 区间下限（包含）
+        high (float): 区间上限（不包含）
+        size (tuple, optional): 输出张量的形状，默认为标量 (None)
+        
+    返回:
+        torch.Tensor: 形状为 size 的张量，值在 [low, high) 范围内
+    """
+    if size is None:
+        size = ()
+    return (high - low) * torch.rand(size) + low
 def recursive_clone(x):
     if isinstance(x, torch.Tensor):
         return x.clone().detach()
@@ -464,50 +480,61 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
 
         # 克隆输入用于扰动
 
+        losskk = []
         targets_sgs = [-1.,-0.5,0.5,1.]
         random_sg = torch.randint(low=0, high=3, size=(1,)).item() 
-        target_sg = targets_sgs[random_sg]
-        # for targets_sg in targets_sgs:
-        # 每张图片扰动一次：选取平均 SG 最接近 +1 的超像素
-        input_p = inputs.clone().detach()
-        for j in range(sgs.shape[0]):  # 遍历每张图片
-            sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
-            sps = sg_avg.unique()
+        targets_sg = targets_sgs[random_sg]
+        for i in range(2):
+            # 每张图片扰动一次：选取平均 SG 最接近 +1 的超像素
+            input_p = inputs.clone().detach()
+            for j in range(sgs.shape[0]):  # 遍历每张图片
+                sg_avg = sgs[j].mean(dim=0)  # [H, W]，每个像素的平均 SG 值
+                sps = sg_avg.unique()
 
-            best_sp = None
-            min_diff = float('inf')
-            
-            for sp in sps:
-                diff = abs(sp- target_sg)
-                if diff < min_diff:
-                    min_diff = diff
-                    best_sp = sp
+                targets_sg = None
+                if i == 0:
+                    max_sp ,_= sps.max()
+                    # 在大于零的部分选出一个值
+                    targets_sg = rand_in_range(0,max_sp)
+                else :
+                    min_sp ,_ =sps.min()
+                    targets_sg = rand_in_range(min_sp,0)
 
-            # 在最接近 +1 的超像素区域添加扰动（3通道）
-            if best_sp is not None:
-                mask=sg_avg == best_sp
-                for c in range(3):  # 每个通道都加扰动
-                    input_p[j, c][mask] += 1e-4
+                best_sp = None
+                min_diff = float('inf')
+                
+                for sp in sps:
+                    diff = abs(sp- targets_sg)
+                    if diff < min_diff:
+                        min_diff = diff
+                        best_sp = sp
 
-        # 前向传播（扰动后）
-        predicted_locs_p, predicted_scores_p = model(input_p)
-        det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
-            predicted_locs_p, predicted_scores_p,
-            min_score=0.01, max_overlap=0.50, top_k=200
-        )
+                # 在最接近 +1 的超像素区域添加扰动（3通道）
+                if best_sp is not None:
+                    mask=sg_avg == best_sp
+                    for c in range(3):  # 每个通道都加扰动
+                        input_p[j, c][mask] += 1e-4
 
-        # victim 模型前向
-        with torch.no_grad():
-            victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
-            victim_boxes_p = recursive_clone(victim_boxes_p)
-            victim_labels_p = recursive_clone(victim_labels_p)
-            victim_scores_p = recursive_clone(victim_scores_p)
-            victim_logits_p = recursive_clone(victim_logits_p)
+            # 前向传播（扰动后）
+            predicted_locs_p, predicted_scores_p = model(input_p)
+            det_boxes_p, det_labels_p, det_scores_p, det_logits_p = model.detect_objects(
+                predicted_locs_p, predicted_scores_p,
+                min_score=0.01, max_overlap=0.50, top_k=200
+            )
 
-        # 计算扰动后的 loss（代替 sum(losskk)）
-        loss_perturb = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
-                                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
+            # victim 模型前向
+            with torch.no_grad():
+                victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p = blackbox(input_p)
+                victim_boxes_p = recursive_clone(victim_boxes_p)
+                victim_labels_p = recursive_clone(victim_labels_p)
+                victim_scores_p = recursive_clone(victim_scores_p)
+                victim_logits_p = recursive_clone(victim_logits_p)
 
+            # 计算扰动后的 loss（代替 sum(losskk)）
+            loss_p = criterion(det_boxes_p, det_labels_p, det_scores_p, det_logits_p,
+                                    victim_boxes_p, victim_labels_p, victim_scores_p, victim_logits_p)
+
+            losskk.append(loss_p)
 
 
         # losskk = []
@@ -579,20 +606,19 @@ def train_step(model,blackbox, train_loader, criterion, optimizer, epoch, device
         #     a = torch.exp(lossz.detach() - losskl.detach() - 3)
         #     a = torch.clamp(a, min=0.1, max=10.0)  # 稳定范围
 
-        loss  = lossz + loss_perturb + a *losskl
-        # loss  = lossz + loss_perturb 
+        loss  = lossz +  sum(losskk) + a *losskl
 
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
 
-        print("\nloss is {:.4f},lossz is {:.4f},loss_p is {:.4f},losskl is {:.4f} ,a is {:.4f}".format(
-            loss.item(),lossz.item(),loss_perturb.item(),losskl.item(),a.item()
+        print("\nloss is {:.4f},lossz is {:.4f},sum(losskk) is {:.4f},losskl is {:.4f} ,a is {:.4f}, call_count is {}".format(
+            loss.item(),sum(losskk).item(),loss_p.item(),losskl.item(),a.item(),blackbox.get_call_count()
         ))
         # === Logging ===
         with open(log_path, 'a') as af:
             # Train 日志行：仅记录 loss
-            train_cols = [batch_idx, epoch, 'train', f"{loss.item():.4f}", '', '', '']
+            train_cols = [batch_idx, epoch, 'train',blackbox.get_call_count(), f"{loss.item():.4f}", '', '', '']
             af.write('\t'.join(map(str, train_cols)) + '\n')
 
     return 
@@ -660,7 +686,7 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
     log_path = osp.join(out_path, 'train{}.log.tsv'.format(checkpoint_suffix))
     if not osp.exists(log_path):
         with open(log_path, 'w') as wf:
-            columns = ['run_id/batch_id', 'epoch', 'split', 'loss', 'gt_mAP50', 'bb_mAP50','bb_mAP5095','best_bb_mAP50']
+            columns = ['run_id/batch_id', 'epoch', 'split', 'query','loss', 'gt_mAP50', 'bb_mAP50','bb_mAP5095','best_bb_mAP50']
             wf.write('\t'.join(columns) + '\n')
 
     model_out_path = osp.join(out_path, 'checkpoint{}.pth.tar'.format(checkpoint_suffix))
@@ -694,6 +720,7 @@ def train_model(model, blackbox,trainset, out_path,label_map, batch_size=64,
                     run_id,
                     epoch,
                     'test',
+                    blackbox.get_call_count(),
                     f"{test_loss.item():.4f}",     # procy vs BB
                     f"{gt_mAP50:.2f}",      # proxy vs GT
                     f"{bb_mAP50:.2f}",      # proxy vs BB
